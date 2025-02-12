@@ -4,13 +4,13 @@ from fastapi import (
     status
 )
 
-from src.schema import IndexSchema
+from src.schema import IndexSerializer
 
 router = APIRouter()
 
 @router.get(
     "", 
-    response_model=IndexSchema,
+    response_model=IndexSerializer,
     status_code=status.HTTP_200_OK
 )
 async def index_view():

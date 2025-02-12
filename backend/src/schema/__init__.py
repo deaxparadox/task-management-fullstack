@@ -1,4 +1,4 @@
 from pydantic import BaseModel
 
-class IndexSchema(BaseModel):
+class IndexSerializer(BaseModel):
     message: str
