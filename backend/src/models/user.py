@@ -86,7 +86,7 @@ class User(Base):
         return check_password(raw_password, self.password)
     
     @staticmethod
-    def make_passsword(raw_password: str) -> str:
+    def make_password(raw_password: str) -> str:
         return generate_hashed_password(raw_password)
     
     def to_dict(self):

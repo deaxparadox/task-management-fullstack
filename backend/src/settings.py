@@ -45,3 +45,5 @@ mail_config = ConnectionConfig(
     USE_CREDENTIALS = True,
     VALIDATE_CERTS = True
 )
+
+OTP_EXPIRE_TIME = os.environ.get("OTP_EXPIRE_TIME")

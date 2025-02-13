@@ -23,3 +23,11 @@ class DetailsSerializer(BaseModel):
     role: int
     phone: int | None = None
     address: AddressSerializer | None = None
+    
+class OTPSerializer(BaseModel):
+    otp: str
+    
+class LoginSerializer(BaseModel):
+    username: str | None = None
+    email: str | None = None
+    password: str

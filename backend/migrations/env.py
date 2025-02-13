@@ -5,7 +5,13 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models import user, address, validation, task
+from src.models import (
+    user, 
+    address, 
+    validation, 
+    task, 
+    otp
+)
 from src.database import Base
 
 # this is the Alembic Config object, which provides

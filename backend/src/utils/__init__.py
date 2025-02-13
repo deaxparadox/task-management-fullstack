@@ -5,14 +5,23 @@ import base64
 
 from .. import settings
 
-def account_activation_link(request: Request, user_model):
-    return f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
+def account_activation_link_message(request: Request, user_model):
+    link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
+    message = (
+        f"Click on the following link to activate your account: {link}"
+    )
+    return message
 
 def password_reset_link(request, encoded_string: str):
     return f"{request.scheme}://{":".join([str(x) for x in request.server])}/api/auth/password-reset-unknown/{encoded_string}"
 
-def account_activation_otp(request, encoded_string):
-    return f"{request.scheme}://{":".join([str(x) for x in request.server])}/api/auth/otp/{encoded_string}"
+def account_activation_otp_message(request, encoded_string, user_otp, /):
+    link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/otp/{encoded_string}"
+    message = (
+        f"Click on the following link to verify the OTP: {link}\n"
+        f"You OTP for activating the account is: {user_otp}"
+    )
+    return message
         
 
 

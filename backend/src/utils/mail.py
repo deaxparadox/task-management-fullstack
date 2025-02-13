@@ -24,7 +24,7 @@ async def send_account_activation_mail(background_tasks, recipients: str, messag
     except Exception as e:
         return False
 
-def send_password_reset_mail(recipients: str, message: str, /):
+async def send_password_reset_mail(recipients: str, message: str):
     try:
         msg = MessageSchema(
             subject='Task mansgement: Password reset',
