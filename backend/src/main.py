@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from .log import logging
 from .routes import index, auth
 
 app = FastAPI()

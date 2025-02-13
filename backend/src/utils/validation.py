@@ -1,7 +1,9 @@
-from string import ascii_letters, digits
 from typing import Any, Tuple
 
-def phone_number_validation(num: Any) -> bool:
+from sqlalchemy.orm import Session
+
+
+async def phone_number_validation(num: Any) -> bool:
     if not isinstance(num, int):
         return False
     count = 0
@@ -13,7 +15,7 @@ def phone_number_validation(num: Any) -> bool:
     return True
 
 
-def password_validation(raw_password: str) -> Tuple[bool, str]:
+async def password_validation(raw_password: str) -> Tuple[bool, str]:
     invalid_message = False, (
         "Password must be atleast 8 characters and atmost 20 characters"
         "and should also include alphanumeric, not special chracter are allowed"
@@ -30,3 +32,22 @@ def password_validation(raw_password: str) -> Tuple[bool, str]:
         return invalid_message
     
     return True, "Successfull password"
+
+
+async def check_mail_exists(db_session: Session, user_model, mail_address: str, /) -> bool:
+    users = db_session.query(user_model).filter_by(email=mail_address).all()
+    if len(users) == 0:
+        return False
+    return True
+
+async def check_username_exists(db_session: Session, user_model, username: str, /) -> bool:
+    users = db_session.query(user_model).filter_by(username=username).all()
+    if len(users) == 0:
+        return False
+    return True
+
+async def check_phone_exists(db_session: Session, user_model, phone: int, /) -> bool:
+    users = db_session.query(user_model).filter_by(phone=phone).all()
+    if len(users) == 0:
+        return False
+    return True

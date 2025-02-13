@@ -1,11 +1,12 @@
+from fastapi import Request
 import json
 import base64
 
 
 from .. import settings
 
-def account_activation_link(request, user_model):
-    return f"{request.scheme}://{":".join([str(x) for x in request.server])}/api/auth/register/{user_model.id}/{user_model.account_activation_id}"
+def account_activation_link(request: Request, user_model):
+    return f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
 
 def password_reset_link(request, encoded_string: str):
     return f"{request.scheme}://{":".join([str(x) for x in request.server])}/api/auth/password-reset-unknown/{encoded_string}"

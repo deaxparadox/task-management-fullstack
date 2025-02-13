@@ -15,6 +15,7 @@ from src.models.task import Task
 from src.utils.security.passwd import generate_hashed_password, check_password
 from src.utils.user import UserType
 
+
 class User(Base):
     __tablename__ = "user"
     

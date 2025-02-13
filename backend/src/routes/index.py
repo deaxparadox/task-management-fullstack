@@ -4,7 +4,7 @@ from fastapi import (
     status
 )
 
-from src.schema import IndexSerializer
+from src.serializer import IndexSerializer
 
 router = APIRouter()
 

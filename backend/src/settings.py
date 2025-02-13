@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from fastapi_mail import ConnectionConfig
 
 load_dotenv()
 
@@ -31,3 +32,16 @@ MAIL_DEFAULT_SENDER = os.environ.get("MAIL_USERNAME")
 CACHE_TYPE = os.environ.get('CACHE_TYPE')
 CACHE_DEFAULT_TIMEOUT = os.environ.get('CACHE_DEFAULT_TIMEOUT')
 CACHE_DIR = os.environ.get('CACHE_DIR')
+
+
+mail_config = ConnectionConfig(
+    MAIL_USERNAME = MAIL_USERNAME,
+    MAIL_PASSWORD = MAIL_PASSWORD,
+    MAIL_FROM = MAIL_USERNAME,
+    MAIL_PORT = MAIL_TLS_PORT,
+    MAIL_SERVER = MAIL_SERVER,
+    MAIL_STARTTLS = True,
+    MAIL_SSL_TLS = False,
+    USE_CREDENTIALS = True,
+    VALIDATE_CERTS = True
+)
