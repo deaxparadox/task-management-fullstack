@@ -13,9 +13,10 @@ interface ResponseType {
 export default function Page() {
     const searchParams = useSearchParams();
     const activationid = searchParams.get("activationid");
+    const username = searchParams.get("username");
     const [activationResponse, setActivationResponse] = useState<ResponseType>()
     const [activationStatus, setActivationStatus] = useState(false);
-    const username = searchParams.get("username");
+    
 
 
     useEffect(() => {
@@ -23,9 +24,12 @@ export default function Page() {
             `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/auth/register/${username}/${activationid}`, 
             {
                 method: "GET",
+                headers: {
+                    "Content-Type": "text/plain"
+                }
             },
         ).then(async response => {
-            console.log(response.headers)
+            // console.log(response.headers)
             console.log(await response.json());
         })
         // .then((data) => {
