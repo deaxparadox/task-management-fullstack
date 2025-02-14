@@ -3,19 +3,29 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #f5f1f1;
   --foreground: #171717;
 }
-
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+#role {
+  padding: 12px 20px;
+  background-color: white;
+  border-radius: 6px;
+}
+#role > option {
+  padding: 6px;
 }
