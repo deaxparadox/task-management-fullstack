@@ -10,7 +10,8 @@ from src.models import (
     address, 
     validation, 
     task, 
-    otp
+    otp,
+    blacklist
 )
 from src.database import Base
 

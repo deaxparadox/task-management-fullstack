@@ -19,6 +19,7 @@ from sqlalchemy.exc import MultipleResultsFound
 from src import settings
 from src.database import get_db
 from src.models.address import Address
+from src.models.blacklist import BlackList
 from src.models.user import User, UserType
 from src.models.validation import Validation
 from src.serializer import auth as auth_serializer
@@ -185,6 +186,15 @@ async def activate_user_account_otp(
     Activate user account, based on OTP_EXPIRE_TIME config.
     """
     decoded_string = decode_string(data_string)
+    
+    # check data string in blacklist.
+    blacklisting_check = db.query(BlackList).filter_by(key=data_string).all()
+    if len(blacklisting_check) > 0:
+        return JSONResponse(
+            {"message": "OTP expired"},
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+    
     username = decoded_string.get("username")
     user_otp_counter = decoded_string.get("otp_counter")
     old_current_time = datetime.fromisoformat(decoded_string.get('current_time'))
@@ -210,10 +220,14 @@ async def activate_user_account_otp(
             status_code=status.HTTP_400_BAD_REQUEST
         )
     
-    # activate user account
+    # activate user account.
     user_instance.account_activation = True 
-    db.add(user_instance)
+    # Add the data string to blacklist.
+    blacklist = BlackList(key=data_string)
+    
+    db.add_all([user_instance, blacklist])
     db.commit()
+    
     
     return JSONResponse(
         {"message": "User account activated successfully"}, 
