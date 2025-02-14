@@ -107,6 +107,7 @@ async def register_user(
             current_time=current_time.isoformat()
         )
         mail_message = account_activation_otp_message(request, encoded_data, user_otp)
+        new_message + " A OTP has been send to the your email. Please verify the OTP"
         if not await send_account_activation_mail(
             background_tasks,
             user_details.email, 
@@ -119,6 +120,7 @@ async def register_user(
             )
         
     else:
+        new_message + "Account activation link has been sent you email. Click on the link to activate the account."
         mail_message = account_activation_link_message(request, new_user)
         if not await send_account_activation_mail(
             background_tasks,
@@ -132,7 +134,10 @@ async def register_user(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE
             )
         
-    return JSONResponse(dict(message=new_message))
+    return JSONResponse(
+        dict(message=new_message),
+        status_code=status.HTTP_201_CREATED
+    )
 
 
 @router.get(
