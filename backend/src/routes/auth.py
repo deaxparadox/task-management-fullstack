@@ -23,6 +23,10 @@ from src.models.user import User, UserType
 from src.models.validation import Validation
 from src.serializer import auth as auth_serializer
 from src.serializer import IndexSerializer
+from src.utils.mixins import (
+    LoginMixin,
+    UserCreateMixin
+)
 from src.utils.otp import OTP
 from src.utils import (
     account_activation_link_message,
@@ -46,44 +50,7 @@ router = APIRouter()
 cache_backend = FastAPICache()
 
 
-class UserCreateMixin:
-    
-    async def create_user(
-        self,
-        db: Session, 
-        user_detail: auth_serializer.RegisterSerializer, 
-        /
-    ) -> typing.Tuple[bool, str]:
-        user = User(
-            username=user_detail.username,
-            email=user_detail.email,
-            password=User.make_password(user_detail.password)
-        )
-        
-        # get user role
-        user_role = self.get_user_role(user_detail.role)
-        if not user_role:
-            return False, "Invalid role selected", None
-        
-        user.role = user_role
-        user.account_activation_id = uuid4()
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        return True, "User created successfully", user
 
-    def get_user_role(self, value, /):
-        """
-        Return appropriate User roles
-        """
-        if UserType.Employee.value == value:
-            return UserType.Employee
-        if UserType.TeamLead.value == value:
-            return UserType.TeamLead
-        if UserType.Manager.value == value:
-            return UserType.Manager
-        return 0        
-    
 
 @router.post(
     "/register",
@@ -125,6 +92,7 @@ async def register_user(
         return JSONResponse({"message": new_message}, status_code=status.HTTP_400_BAD_REQUEST) 
     
     if otp == "yes":
+        
         otp_instance = OTP(db)
         otp_instance.generate()
         user_otp = otp_instance.otp
@@ -204,7 +172,7 @@ async def activate_user_account(username: str, activation_id: str, db: Session =
     )
 
 
-@router.get(
+@router.post(
     "/otp/{data_string}",
     response_model = IndexSerializer
 )
@@ -238,13 +206,12 @@ async def activate_user_account_otp(
     hotp = OTP()
     if not hotp.verify(otp_serializer.otp, int(user_otp_counter)):
         return JSONResponse(
-            {"message": "Invalid activation ID"}, 
+            {"message": "Incorrect OTP"}, 
             status_code=status.HTTP_400_BAD_REQUEST
         )
     
     # activate user account
-    user_instance.account_activation = True
-    
+    user_instance.account_activation = True 
     db.add(user_instance)
     db.commit()
     
@@ -252,33 +219,9 @@ async def activate_user_account_otp(
         {"message": "User account activated successfully"}, 
         status_code=status.HTTP_202_ACCEPTED
     )
-    
 
 
 
-class LoginMixin:
-    user_model = None
-    db: Session = None
-    
-    async def get_user(self, *, username: str | None = None, email: str | None = None):
-        """
-        This function returns the user via username or email
-        """
-        if username:
-            return self.db.query(self.user_model).filter_by(username=username).one_or_none()
-        if email:
-            return self.db.query(self.user_model).filter_by(email=email).one_or_none()
-        return
-    
-    async def check(self, username: str | None = None, email: str | None = None, password: str | None = None) -> None:
-        """
-        This function check (username or password) or (email of password), and 
-        returns a boolean value
-        """
-        user = await self.get_user(email=email, username=username)
-        if not user:
-            return False
-        return user.check_password(password)
 
 @router.post(
     "/login",

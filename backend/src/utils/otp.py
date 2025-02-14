@@ -26,7 +26,7 @@ class OTP:
         if not self.__db:
             raise RuntimeError("Database session not set for otp")
         
-        row: Otp = self.__db.query(self.otp_model).first()
+        row: Otp = self.__db.query(self.otp_model).with_for_update().first()
         
         # get otp and counter
         self.__current_otp_counter = row.counter

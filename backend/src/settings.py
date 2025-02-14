@@ -47,3 +47,6 @@ mail_config = ConnectionConfig(
 )
 
 OTP_EXPIRE_TIME = os.environ.get("OTP_EXPIRE_TIME")
+
+REDIS_HOST = os.environ.get("REDIS_HOST")
+REDIS_PORT = os.environ.get("REDIS_PORT")

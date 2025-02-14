@@ -6,7 +6,10 @@ import base64
 from .. import settings
 
 def account_activation_link_message(request: Request, user_model):
-    link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
+    if request.url.port:
+        link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
+    else:
+        link = f"{request.url.scheme}://{request.url.hostname}/api/auth/register/{user_model.username}/{user_model.account_activation_id}"
     message = (
         f"Click on the following link to activate your account: {link}"
     )
@@ -16,7 +19,10 @@ def password_reset_link(request, encoded_string: str):
     return f"{request.scheme}://{":".join([str(x) for x in request.server])}/api/auth/password-reset-unknown/{encoded_string}"
 
 def account_activation_otp_message(request, encoded_string, user_otp, /):
-    link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/otp/{encoded_string}"
+    if request.url.port:
+        link = f"{request.url.scheme}://{":".join([request.url.hostname, str(request.url.port)])}/api/auth/otp/{encoded_string}"
+    else:   
+        link = f"{request.url.scheme}://{request.url.hostname}/api/auth/otp/{encoded_string}"
     message = (
         f"Click on the following link to verify the OTP: {link}\n"
         f"You OTP for activating the account is: {user_otp}"
