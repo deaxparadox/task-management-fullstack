@@ -27,7 +27,12 @@ class DetailsSerializer(BaseModel):
 class OTPSerializer(BaseModel):
     otp: str
     
+
+class OTPLoginSerializer(BaseModel):
+    email: EmailStr
+    
 class LoginSerializer(BaseModel):
     username: str | None = None
-    email: str | None = None
+    email: EmailStr | None = None
     password: str
+    

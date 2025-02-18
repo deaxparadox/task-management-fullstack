@@ -4,8 +4,8 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 
 from src.models.user import User
-from src.utils.user import UserType
 from src.serializer import auth as auth_serializer
+from src.utils.user import UserType
 
 
 class UserCreateMixin:
@@ -70,17 +70,34 @@ class LoginMixin:
             return False
         return user.check_password(password)
 
+
 class UserVerifyMixin:
     checked_user = None
     
-    async def check_user_exists(self, username: str) -> bool:
-        self.checked_user = self.db_session.query(self.user_model).where(self.user_model.username==username).all()
+    async def check_user_exists(self, username: str, /) -> bool:
+        self.checked_user = self.db.query(self.user_model).where(self.user_model.username==username).all()
         if len(self.checked_user) > 0:
             return True
         return False
     
-    async def check_user_by_id(self, user_id: int) -> bool:
-        self.checked_user = self.db_session.query(self.user_model).where(self.user_model.id==user_id).one_or_none()
+    
+    async def check_email_exists(self, email: str, /) -> bool:
+        self.checked_user = self.db.query(self.user_model).where(self.user_model.email==email).all()
+        print(self.checked_user)
+        if len(self.checked_user) > 0:
+            return True
+        return False
+    
+    async def check_user_by_id(self, user_id: int, /) -> bool:
+        self.checked_user = self.db.query(self.user_model).where(self.user_model.id==user_id).one_or_none()
         if self.checked_user and self.checked_user.active:
             return True
         return False
+    
+
+class OTPLoginMixin(LoginMixin, UserVerifyMixin):
+    async def login_verify(self, email: str):
+        return await self.check_email_exists(email)
+    
+    async def get_user(self):
+        return self.checked_user[0]

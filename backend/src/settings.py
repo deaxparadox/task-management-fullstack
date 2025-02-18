@@ -50,3 +50,6 @@ OTP_EXPIRE_TIME = os.environ.get("OTP_EXPIRE_TIME")
 
 REDIS_HOST = os.environ.get("REDIS_HOST")
 REDIS_PORT = os.environ.get("REDIS_PORT")
+
+NGROK_SCHEME = os.environ.get("NGROK_SCHEME")
+NGROK_FRONT_SERVER = os.environ.get("NGROK_FRONT_SERVER")

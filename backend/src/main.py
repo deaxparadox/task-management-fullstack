@@ -12,17 +12,19 @@ from .routes import index, auth
 
 
 allowed_origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://4ad3-119-82-92-120.ngrok-free.app"
 ]
 allowed_methods = [
     "GET",
     "POST",
     "PUT",
-    "DELETE"
+    "DELETE",
+    "OPTIONS"
 ]
 allowed_headers = {
-    "text/plain",
-    "application/json"
+    "*"
 }
 
 @asynccontextmanager
@@ -38,7 +40,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_methods=allowed_methods,
-    allow_headers=allowed_headers
+    allow_headers=allowed_headers,
+    max_age=3600
 )
 
 app.include_router(index.router, prefix="/api")
